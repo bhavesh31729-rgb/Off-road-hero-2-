@@ -1,0 +1,19 @@
+name: Build Windows exe
+on:
+  workflow_dispatch:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install 32-bit Windows compiler
+        run: sudo apt-get update && sudo apt-get install -y g++-mingw-w64-i686
+      - name: Compile
+        run: |
+          i686-w64-mingw32-g++ -O2 -march=i686 -mwindows -static -static-libgcc -static-libstdc++ -o OffroadHero.exe Offroad.cpp -lopengl32 -lglu32 -lgdi32
+          mkdir out && cp OffroadHero.exe Config.txt out/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: OffroadHero
+          path: out
